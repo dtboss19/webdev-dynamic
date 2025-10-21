@@ -6,8 +6,7 @@
         "name": "",
         "email": ""
     },
-    "contributors": [
-    ],
+    "contributors": [],
     "repository": {},
     "dependencies": {
         "express": "^5.1.0",
