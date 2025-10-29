@@ -3,12 +3,18 @@
     "description": "Dynamic Server",
     "version": "1.0.0",
     "author": {
-        "name": "",
-        "email": ""
+        "name": "Dylan",
+        "email": "dylan@example.com"
     },
-    "contributors": [],
-    "repository": {},
+    "contributors": [
+        "Dylan"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/dylan/webdev-dynamic"
+    },
     "dependencies": {
+        "chart.js": "^4.5.1",
         "express": "^5.1.0",
         "sqlite3": "^5.1.7"
     }

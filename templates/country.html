@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{{title}}</title>
+	<link rel="stylesheet" href="/css/foundation.css">
+</head>
+<body>
+	<header class="top-bar">
+		<div class="top-bar-right">
+			<ul class="menu">
+				<li><a href="/">Home</a></li>
+				<li><a href="{{prevLink}}">Prev</a></li>
+				<li><a href="{{nextLink}}">Next</a></li>
+			</ul>
+		</div>
+	</header>
+	<main class="grid-container">
+		<h1 class="h2">{{pageTitle}}</h1>
+		<table class="hover">
+			<thead>
+				<tr>
+					<th>Year</th>
+					<th>Freedom Index</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{tableRows}}
+			</tbody>
+		</table>
+		<section style="margin-top: 24px;">
+			<canvas id="countryChart" height="120"></canvas>
+		</section>
+	</main>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script type="application/json" id="countryLabels">{{chartLabels}}</script>
+	<script type="application/json" id="countryValues">{{chartData}}</script>
+	<script>
+	(function() {
+		function safeParse(id) {
+			try {
+				const el = document.getElementById(id);
+				if (!el) return [];
+				const txt = (el.textContent || '').trim();
+				if (!txt) return [];
+				return JSON.parse(txt);
+			} catch (_) { return []; }
+		}
+		const labels = safeParse('countryLabels');
+		const values = safeParse('countryValues');
+		const ctx = document.getElementById('countryChart');
+		if (!ctx) return;
+		new Chart(ctx, {
+			type: 'line',
+			data: {
+				labels,
+				datasets: [{
+					label: 'Freedom Index',
+					data: values,
+					borderColor: 'rgba(75, 192, 192, 1)',
+					backgroundColor: 'rgba(75, 192, 192, 0.2)',
+					tension: 0.2,
+					fill: true
+				}]
+			},
+			options: {
+				responsive: true,
+				plugins: {
+					legend: { position: 'top' },
+					title: { display: true, text: 'Freedom Index Over Time' }
+				},
+				scales: {
+					y: { beginAtZero: true }
+				}
+			}
+		});
+	})();
+	</script>
+	</body>
+</html>

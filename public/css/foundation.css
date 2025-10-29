@@ -12,6 +12,63 @@
     margin: 0 auto;
   }
 }
+
+/* --- Custom Theme Overrides: Modern Sleek --- */
+:root {
+  --bg: #ffffff;
+  --panel: #ffffff;
+  --muted: #6b7280; /* gray-500 */
+  --text: #111827; /* gray-900 */
+  --primary: #111827; /* near-black */
+  --primary-600: #000000;
+  --accent: #111827;
+}
+
+html, body {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+.top-bar, .top-bar ul {
+  background-color: var(--panel) !important;
+}
+
+.menu a {
+  color: var(--primary);
+}
+.menu a:hover, .menu a:focus {
+  color: var(--primary-600);
+}
+
+table {
+  background: var(--panel);
+  border-color: rgba(17,24,39,0.15);
+}
+thead th {
+  color: var(--muted);
+}
+tbody td {
+  color: var(--text);
+}
+table.hover tbody tr:hover {
+  background-color: rgba(17,24,39,0.04);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.button, .menu .is-active > a, .menu .active > a {
+  background-color: var(--primary);
+}
+.button:hover, .button:focus {
+  background-color: var(--primary-600);
+}
+
+.callout.primary { background-color: rgba(17,24,39,0.08); }
+.card, .callout { background-color: var(--panel); color: var(--text); }
+
 /*! normalize.css v8.0.0 | MIT License | github.com/necolas/normalize.css */
 html {
   line-height: 1.15;
