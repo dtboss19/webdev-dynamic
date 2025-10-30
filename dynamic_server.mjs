@@ -43,12 +43,77 @@ function renderTemplate(templateContent, data) {
 // Home page
 app.get('/', (req, res) => {
     const templateContent = readTemplate('index.html');
-    const data = {
-        title: 'Economic Freedom Explorer',
-        pageTitle: 'Economic Freedom Explorer',
-        description: 'Browse economic freedom metrics by country and year.',
-    };
-    res.send(renderTemplate(templateContent, data));
+    // Build combined datasets for latest year: country-aligned x index and five y values
+    const latestYearSql = `SELECT MAX(year) as y FROM economic_data`;
+    db.get(latestYearSql, [], (eY, yearRow) => {
+        if (eY) {
+            const data = {
+                title: 'Economic Freedom Explorer',
+                pageTitle: 'Economic Freedom Explorer',
+                description: 'Browse economic freedom metrics by country and year.',
+                chartYear: '',
+                homeLabels: '[]',
+                homeFreedom: '[]',
+                homeSM: '[]',
+                homeGS: '[]',
+                homePR: '[]',
+                homeTR: '[]'
+            };
+            return res.send(renderTemplate(templateContent, data));
+        }
+        const latestYear = yearRow?.y;
+        const sql = `
+            SELECT 
+                country,
+                year,
+                economic_freedom_summary_index AS FreedomIndex,
+                sound_money AS SoundMoney,
+                size_of_government AS GovernmentSize,
+                legal_system_property_rights AS PropertyRights,
+                freedom_to_trade_internationally AS Trade
+            FROM economic_data
+            WHERE year = ?
+            AND economic_freedom_summary_index IS NOT NULL
+        `;
+        db.all(sql, [latestYear], (eData, rows) => {
+            let labels = [];
+            const dsFreedom = [];
+            const dsSM = [];
+            const dsGS = [];
+            const dsPR = [];
+            const dsTR = [];
+            if (!eData && Array.isArray(rows)) {
+                const sorted = rows.slice().sort((a, b) => Number(b.FreedomIndex ?? 0) - Number(a.FreedomIndex ?? 0));
+                const top = sorted.slice(0, 20);
+                labels = top.map(r => r.country);
+                top.forEach((r, idx) => {
+                    const y = Number(r.FreedomIndex);
+                    if (Number.isFinite(y)) dsFreedom.push({ x: idx, y });
+                    const sm = Number(r.SoundMoney);
+                    if (Number.isFinite(sm)) dsSM.push({ x: idx, y: sm });
+                    const gs = Number(r.GovernmentSize);
+                    if (Number.isFinite(gs)) dsGS.push({ x: idx, y: gs });
+                    const pr = Number(r.PropertyRights);
+                    if (Number.isFinite(pr)) dsPR.push({ x: idx, y: pr });
+                    const tr = Number(r.Trade);
+                    if (Number.isFinite(tr)) dsTR.push({ x: idx, y: tr });
+                });
+            }
+            const data = {
+                title: 'Economic Freedom Explorer',
+                pageTitle: 'Economic Freedom Explorer',
+                description: 'Browse economic freedom metrics by country and year.',
+                chartYear: String(latestYear ?? ''),
+                homeLabels: JSON.stringify(labels),
+                homeFreedom: JSON.stringify(dsFreedom),
+                homeSM: JSON.stringify(dsSM),
+                homeGS: JSON.stringify(dsGS),
+                homePR: JSON.stringify(dsPR),
+                homeTR: JSON.stringify(dsTR)
+            };
+            res.send(renderTemplate(templateContent, data));
+        });
+    });
 });
 
 // Route 1: Year view - list countries for a given year with key metrics

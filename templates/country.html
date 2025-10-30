@@ -18,6 +18,10 @@
 	</header>
 	<main class="grid-container">
 		<h1 class="h2">{{pageTitle}}</h1>
+		<div class="callout" style="display:flex; align-items:center; gap:16px;">
+			<img id="flagImg" alt="Country flag" style="height:48px; width:auto; display:none; border-radius:4px;">
+			<span id="flagCountryLabel" style="font-weight:600;"></span>
+		</div>
 		<table class="hover">
 			<thead>
 				<tr>
@@ -34,6 +38,47 @@
 		</section>
 	</main>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script>
+	(function(){
+		try {
+			var titleEl = document.querySelector('h1.h2');
+			var titleText = (titleEl && titleEl.textContent) ? titleEl.textContent.trim() : '';
+			var countryName = '';
+			var m = titleText.match(/Freedom\s+Scores:\s*(.+)$/);
+			if (m && m[1]) countryName = m[1].trim();
+			// Stop at the first comma if present (e.g., "Hong Kong SAR, China" -> "Hong Kong SAR")
+			countryName = countryName.split(',')[0].trim();
+			if (!countryName) return;
+			document.getElementById('flagCountryLabel').textContent = countryName;
+			var encoded = encodeURIComponent(countryName);
+			function setFlagFromData(data){
+				if (!Array.isArray(data) || !data[0]) return false;
+				var flags = data[0].flags || {};
+				var src = flags.svg || flags.png || '';
+				if (!src) return false;
+				var img = document.getElementById('flagImg');
+				img.src = src;
+				img.style.display = 'inline-block';
+				img.alt = (data[0].name && data[0].name.common ? data[0].name.common : countryName) + ' flag';
+				return true;
+			}
+			fetch('https://restcountries.com/v3.1/name/' + encoded + '?fullText=true')
+				.then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+				.then(function(data){ if (!setFlagFromData(data)) throw new Error('no flag'); })
+				.catch(function(){
+					return fetch('https://restcountries.com/v3.1/name/' + encoded)
+						.then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+						.then(function(data){ if (!setFlagFromData(data)) throw new Error('no flag'); })
+						.catch(function(){
+							var img = document.getElementById('flagImg');
+							img.src = 'https://countryflagsapi.com/png/' + encoded;
+							img.style.display = 'inline-block';
+							img.alt = countryName + ' flag';
+						});
+				});
+		} catch(_) {}
+	})();
+	</script>
 	<script type="application/json" id="countryLabels">{{chartLabels}}</script>
 	<script type="application/json" id="countryValues">{{chartData}}</script>
 	<script>
