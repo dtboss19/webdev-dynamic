@@ -153,6 +153,24 @@ textarea {
   margin: 0;
 }
 
+button{
+    background-color: #5D3FD3; /* Your new primary color */
+    border-radius: 8px; /* Give it rounded corners */
+}
+
+
+button:hover {
+    background-color: #4A32A8; /* A slightly darker version */
+}
+
+a {
+    color: #5D3FD3;
+}
+
+a:hover {
+    color: #4A32A8;
+}
+
 button,
 input {
   overflow: visible;

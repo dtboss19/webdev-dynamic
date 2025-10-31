@@ -1,0 +1,55 @@
+/* Override Foundation's default primary button */
+.button {
+    background-color: #5D3FD3; 
+    border-radius: 8px; /* Give it rounded corners */
+}
+
+/* Change the hover color */
+.button:hover {
+    background-color: #4A32A8; /* A slightly darker version */
+}
+.button.primary {
+    background-color: #5D3FD3; 
+    border-radius: 8px; 
+}
+
+.button.primary:hover {
+    background-color: #4A32A8; 
+}
+
+/* Change link colors */
+a {
+    color: #5D3FD3;
+}
+a:hover {
+    color: #4A32A8;
+}
+
+body {
+    background-color: #222222; 
+
+    color: #FAFAFA; 
+}
+
+h1, h2, h3, h4, h5, h6{
+    color: #FFFFFF;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #FFFFFF;
+}
+
+
+h3[style="margin-top:0;"] {
+    color: #222222; /* A dark charcoal color */
+}
+
+html {
+    /* Make the base HTML background dark too */
+    background-color: #222222; /* Use your body's dark color */
+}
+
+body {
+    /* Tell the body to be AT LEAST the full height of the viewport */
+    min-height: 100vh;
+}
